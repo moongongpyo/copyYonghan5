@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"> <!--타임리프 사용 선언-->
+<head>
+    <meta charset="utf-8">
+    <link href="../../static/css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}" rel="stylesheet"> <!--th:href="@{/css/bootstrap.min.css}" 속성을 통해 상대경로에서 절대경로로변경 th키워드로 타임리프 우선 실행-->
+</head>
+<body>
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2 th:text="#{page.items}">상품 목록</h2>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary float-end"
+                    onclick="location.href='addForm.html'"
+                    th:onclick="|location.href='@{/basic/items/add}'|"
+                    type="button" th:text="#{page.addItem}">상품 등록</button>
+        </div>
+    </div> <!--버튼 클릭시 해당 경로에 있는 addForm.html 타임리프로 링크-->
+    <hr class="my-4">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{label.item.id}">ID</th>
+                <th th:text="#{label.item.itemName}">상품명</th>
+                <th th:text="#{label.item.price}">가격</th>
+                <th th:text="#{label.item.quantity}">수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}"> <!--모델에 있는 아이템을 꺼내서 변수에 넣어줌-->
+                <td><a href="item.html" th:href="@{/basic/items/{itemId}(itemId=${item.id})}" th:text="${item.id}">회원id</a></td> <!--프로퍼티 형식으로 값 꺼내서  화면에 출력, 아이템 개별 정보 타임리프로 아이템 아이디 정보와 함께 전달-->
+                <td><a href="item.html" th:href="@{|/basic/items/${item.id}|}" th:text="${item.itemName}">상품명</a></td>
+                <td th:text="${item.price}">10000</td>
+                <td th:text="${item.quantity}">10</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>
