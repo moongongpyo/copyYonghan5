@@ -9,6 +9,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,6 +24,13 @@ import java.util.*;
 @RequiredArgsConstructor //final 이 붙은 클래스 필드를 생성자주입하기 위한 생성자 자동 생성
 public class ValidationItemControllerV2 {
     private final ItemRepositoryV2 itemRepository;
+    private final ItemValidator itemValidator;
+
+    @InitBinder
+    public void init(WebDataBinder dataBinder){
+        dataBinder.addValidators(itemValidator);
+    }
+
     @ModelAttribute("regions") // 이 컨트롤러에서 호출시에 항상 이 모델이 생성됨며 전달됨// 컨트롤러 실행시에 항상 호출되기에 성능상으로는 static 영역에 따로 데이터 모델을 만들어 두는 것이 이득임
     public Map<String,String> regions(){
         Map<String, String> regions = new LinkedHashMap<>();// 일반 해시맵은 순서가 보장되지 않음
@@ -65,7 +75,6 @@ public class ValidationItemControllerV2 {
 
         return "validation/v2/addForm";
     }
-
 
     /*@PostMapping("/add")
     public String addItemV1(@RequestParam String itemName,
@@ -224,12 +233,18 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }*/
-    @PostMapping("/add")
+    /*@PostMapping("/add")
         public String addItemV4_4(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
 
+        if(bindingResult.hasErrors()){
+            log.info("errors={}",bindingResult);
+            return "validation/v2/addForm";
+        }
+
         //검증 로직
+        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult,"itemName","required");     //Empty 나 공백같은 단순한 기능 사용시 if문 제공
         if (!StringUtils.hasText(item.getItemName())){
-            bindingResult.rejectValue("itemName","required");
+           bindingResult.rejectValue("itemName","required");
         }
         if (item.getPrice()==null || item.getPrice() < 1000 ||item.getPrice()>1000000){
             bindingResult.rejectValue("price","range",new Object[]{1000,1000000},null);
@@ -245,6 +260,39 @@ public class ValidationItemControllerV2 {
                 bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
             }
         }
+
+        //검증에 실패하면 다시 입력 폼으로
+        if(bindingResult.hasErrors()){
+            return "validation/v2/addForm";
+        }
+
+        //성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }*/
+/* @PostMapping("/add")
+        public String addItemV4_5( @ModelAttribute Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes){
+
+        if(bindingResult.hasErrors()){
+
+         return "validation/v2/addForm";
+         }
+        itemValidator.validate(item, bindingResult);
+        //검증에 실패하면 다시 입력 폼으로
+        if(bindingResult.hasErrors()){
+            return "validation/v2/addForm";
+        }
+
+        //성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }*/
+    @PostMapping("/add")
+        public String addItemV4_6(@Validated @ModelAttribute  Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         //검증에 실패하면 다시 입력 폼으로
         if(bindingResult.hasErrors()){
