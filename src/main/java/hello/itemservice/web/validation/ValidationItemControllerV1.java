@@ -2,7 +2,7 @@ package hello.itemservice.web.validation;
 
 import hello.itemservice.domain.item.DeliveryCode;
 import hello.itemservice.domain.item.Item;
-import hello.itemservice.domain.item.ItemRepositoryV1;
+import hello.itemservice.domain.item.ItemRepository;
 import hello.itemservice.domain.item.ItemType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.*;
 @RequestMapping("/validation/v1/items")
 @RequiredArgsConstructor //final 이 붙은 클래스 필드를 생성자주입하기 위한 생성자 자동 생성
 public class ValidationItemControllerV1 {
-    private final ItemRepositoryV1 itemRepository;
+    private final ItemRepository itemRepository;
     @ModelAttribute("regions") // 이 컨트롤러에서 호출시에 항상 이 모델이 생성됨며 전달됨// 컨트롤러 실행시에 항상 호출되기에 성능상으로는 static 영역에 따로 데이터 모델을 만들어 두는 것이 이득임
     public Map<String,String> regions(){
         Map<String, String> regions = new LinkedHashMap<>();// 일반 해시맵은 순서가 보장되지 않음
@@ -147,10 +147,6 @@ public class ValidationItemControllerV1 {
     }
 
 
-    @PostConstruct
-    private void init(){
-        itemRepository.save(new Item("itemA",10000,10));
-        itemRepository.save(new Item("itemB",20000,20));
-    }
+
 
 }

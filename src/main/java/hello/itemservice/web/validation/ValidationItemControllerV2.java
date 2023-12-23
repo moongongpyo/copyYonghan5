@@ -23,7 +23,7 @@ import java.util.*;
 @RequestMapping("/validation/v2/items")
 @RequiredArgsConstructor //final 이 붙은 클래스 필드를 생성자주입하기 위한 생성자 자동 생성
 public class ValidationItemControllerV2 {
-    private final ItemRepositoryV2 itemRepository;
+    private final ItemRepository itemRepository;
     private final ItemValidator itemValidator;
 
     @InitBinder
@@ -76,60 +76,9 @@ public class ValidationItemControllerV2 {
         return "validation/v2/addForm";
     }
 
-    /*@PostMapping("/add")
-    public String addItemV1(@RequestParam String itemName,
-                           @RequestParam int price,
-                           @RequestParam Integer quantity,
-                       Model model){
-        Item item = new Item();
-        item.setItemName(itemName);
-        item.setPrice(price);
-        item.setQuantity(quantity);
 
-        itemRepository.save(item);
-
-        model.addAttribute("item",item);
-        return "validation/v2/items";
-    }*/
-    /*@PostMapping("/add")
-    public String addItemV2(@ModelAttribute("item")Item item, //이름값을 지정하면 해당 이름으로 모델울 생성하여 뷰로 전달한다 따라서 addAttribute를 안해주어도 된다
-                            Model model){
-
-        itemRepository.save(item);
-        //model.addAttribute("item",item);
-         return "validation/v2/items";  //포스트 이후 리다이렉트를 사용하지 않고 새로고침하면 /add url이 다시 요청되기 때문에 반드시 리다이렉트 처리 해주어야 한다.
-
-    }*/
-   /* @PostMapping("/add")
-    public String addItemV3(Item item){
-        itemRepository.save(item);
-         return "redirect:/validation/v2/items"+item.getId();
-    }*/
-  /*  @PostMapping("/add")
-    public String addItemV4(Item item, RedirectAttributes redirectAttributes, Model model){
-
-        //검증 오류 결과를 보관
-        Map<String,String> errors = new HashMap<>();
-        //검증 로직
-        if (!StringUtils.hasText(item.getItemName())){
-            errors.put("itemName", "상품 이름은 필수입니다.");
-        }
-        if (item.getPrice()==null || item.getPrice() < 1000 ||item.getPrice()>1000000){
-            errors.put("price", "가격은 1,000 ~ 1,000,000 까지 허용합니다.");
-        }
-        if(item.getQuantity() == null || item.getQuantity()>=9999){
-            errors.put("quantity", "수량은 최대 9,999 까지 허용합니다.");
-        }
-
-        //특정 필드가 아닌 복합 룰 검증
-        if(item.getPrice() != null && item.getQuantity() != null){
-            int resultPrice = item.getPrice() * item.getQuantity();
-            if(resultPrice < 10000){
-                errors.put("globalError","가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 =" + resultPrice);
-            }
-        }*/
   /* @PostMapping("/add")
-        public String addItemV4_1(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
+        public String addItemV1(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
 
         //검증 로직
         if (!StringUtils.hasText(item.getItemName())){
@@ -164,7 +113,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }*/
   /*  @PostMapping("/add")
-        public String addItemV4_2(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
+        public String addItemV2(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
 
         //검증 로직
         if (!StringUtils.hasText(item.getItemName())){
@@ -199,7 +148,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }*/
     /* @PostMapping("/add")
-        public String addItemV4_3(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
+        public String addItemV3(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
 
         //검증 로직
         if (!StringUtils.hasText(item.getItemName())){
@@ -234,7 +183,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }*/
     /*@PostMapping("/add")
-        public String addItemV4_4(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
+        public String addItemV4(Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes, Model model){
 
         if(bindingResult.hasErrors()){
             log.info("errors={}",bindingResult);
@@ -273,7 +222,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }*/
 /* @PostMapping("/add")
-        public String addItemV4_5( @ModelAttribute Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes){
+        public String addItemV5( @ModelAttribute Item item, BindingResult bindingResult,  RedirectAttributes redirectAttributes){
 
         if(bindingResult.hasErrors()){
 
@@ -292,7 +241,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }*/
     @PostMapping("/add")
-        public String addItemV4_6(@Validated @ModelAttribute  Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+        public String addItemV6(@Validated @ModelAttribute  Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         //검증에 실패하면 다시 입력 폼으로
         if(bindingResult.hasErrors()){
@@ -320,10 +269,5 @@ public class ValidationItemControllerV2 {
     }
 
 
-    @PostConstruct
-    private void init(){
-        itemRepository.save(new Item("itemA",10000,10));
-        itemRepository.save(new Item("itemB",20000,20));
-    }
 
 }
